@@ -41,7 +41,7 @@ proc `$`(this:var ModelState):string =
   this.update
   return &"{this.name}:\n  rele1:{this.rele1} rele2:{this.rele2} rele3: {this.rele3}"
 
-proc defineModel():ModelState =
+proc defineModel(): ModelState =
   result.name = "prueba"
   result.rele1 = Unconnected
   result.rele2 = Connected
