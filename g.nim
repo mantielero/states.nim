@@ -24,33 +24,36 @@ proc `and`(a,b:Relay):Relay =
   else:
     return Unconnected
 
+proc `or`(a,b:Relay):Relay =
+  if a == Connected or b == Connected:
+    return Connected
+  else:
+    return Unconnected
 
-# This is the model definition
+
 type
   ModelState = object
     name:string
-    rele1, rele2, rele3: Relay   # Todo esto representa el estado del modelo
-    outputs:seq[ proc(this:var ModelState) ] 
+    states:seq[Relay]
 
-# The whole model would be a function
 proc update(this:var ModelState) =
-  for f in this.outputs:
-    this.f
+  # impose the relationships between states
+  this.states[2] = this.states[0] and this.states[1]
+
+
+# This is the model definition
 
 proc `$`(this:var ModelState):string =
   this.update
-  return &"{this.name}:\n  rele1={this.rele1}\n  rele2={this.rele2}\n  rele3={this.rele3}"
+  return &"{this.name}:\n  rele1={this.states[0]}\n  rele2={this.states[1]}\n  rele3={this.states[2]}"
 
 proc defineModel(): ModelState =
   result.name = "prueba"
   # Set defaults (for each substate)
-  result.rele1 = Unconnected
-  result.rele2 = Connected
-  result.rele3 = Unconnected #
+  result.states &= @[ Unconnected,
+                      Connected,
+                      Unconnected ]
    
-  result.outputs &= 
-    proc(this:var ModelState) = 
-      this.rele3 = this.rele1 and this.rele2
   
 #------------------------
 proc main =
@@ -58,7 +61,7 @@ proc main =
   
   echo m
   for i in 1..3:
-    m.rele1.switch
+    m.states[0].switch
     echo m
 
 main()

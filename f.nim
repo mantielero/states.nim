@@ -24,6 +24,11 @@ proc `and`(a,b:Relay):Relay =
   else:
     return Unconnected
 
+proc `or`(a,b:Relay):Relay =
+  if a == Connected or b == Connected:
+    return Connected
+  else:
+    return Unconnected
 
 # This is the model definition
 type
